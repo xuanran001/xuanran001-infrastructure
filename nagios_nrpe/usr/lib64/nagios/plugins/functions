@@ -1,0 +1,74 @@
+# -*-Shell-script-*-
+#
+# functions This file contains functions to be used by most or all
+#   shell scripts in the /usr/lib64/nagios/plugins directory.
+#
+
+GLUEIP="192.168.1.153"
+SVNOPT=" --username=ci --password=sp12345678 --no-auth-cache --non-interactive --force "
+TOOLS_URL="http://www.xuanran001.com/public/tools"
+
+RET_OK=0
+RET_WR=1
+RET_CR=2
+RET_UK=3
+
+function check_diff() {
+  local server="$1"
+  local path="$2"
+  local name="`basename $path`"
+  local tmp_path="/tmp/check_diff_$name"
+
+  if [ ! -f "$path" ]; then
+    echo -n "File not found: $path; "
+    exit $RET_CR
+  fi
+
+  svn export $SVNOPT http://$GLUEIP/svn/glue/trunk/infrastructure/${server}${path} $tmp_path &> /dev/null
+  if [ $? -ne 0 ]; then
+    echo -n "Failed to get file from svn server!"
+    exit $RET_OK
+  fi
+
+  diff $path $tmp_path &> /dev/null
+  if [ $? -ne 0 ]; then
+    echo -n "File diff from svn: $path; "
+    exit $RET_WR
+  fi
+
+  rm -rf $tmp_path
+}
+
+function check_mount() {
+  local path="$1"
+  if [ ! -f $path ]; then
+    echo "Not exist mount point: $path"
+    exit $RET_CR
+  fi
+}
+
+function check_file() {
+  local path="$1"
+  if [ ! -f $path ]; then
+    echo "Not exist file: $path"
+    exit $RET_CR
+  fi
+}
+
+function check_rpm() {
+  local package_name="$1"
+  /bin/rpm -q $package_name &> /dev/null
+  if [ $? -ne 0 ]; then
+    echo "Package not installed: $package_name"
+    exit $RET_CR
+  fi
+}
+
+function check_selinux() {
+  # MUST disable selinux
+  /usr/sbin/sestatus | grep enabled &> /dev/null
+  if [ $? -eq 0 ]; then
+    echo "SELinux not disabled."
+    exit $RET_CR
+  fi
+}
