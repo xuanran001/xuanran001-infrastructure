@@ -13,11 +13,11 @@ request_count=`grep "HTTP" $jstack_dump | wc -l`
 
 echo -n "Request count: $request_count; "
 
-if [ $request_count -gt 10 ]; then
-  echo "larger than 10"
+if [ $request_count -gt 50 ]; then
+  echo "larger than 50"
   exit $RET_CR
-elif [ $request_count -gt 5 ]; then
-  echo "larger than 5"
+elif [ $request_count -gt 30 ]; then
+  echo "larger than 30"
   exit $RET_WR
 fi
 
