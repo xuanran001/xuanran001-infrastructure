@@ -12,14 +12,21 @@
 RESTART_FLAG="/tmp/glue-service-is-restarting-now"
 # This flag is create by maintenance guy.
 MAINT_FLAG="/home/glue/weihuzhong.txt"
+# Backup sling dir now.
+BACKUP_FLAG="/tmp/backup_sling_dir.flag"
 
 if [ -f $MAINT_FLAG ]; then
-  echo "Under maintainence."
+  echo "Sling box is under maintainence."
   exit $RET_OK
 fi
 
 if [ -f $RESTART_FLAG ]; then
   echo "Sling is restarting."
+  exit $RET_OK
+fi
+
+if [ -f $BACKUP_FLAG ]; then
+  echo "Backup sling dir now."
   exit $RET_OK
 fi
 
