@@ -8,7 +8,9 @@
 #
 
 MAINT_FLAG="/home/glue/weihuzhong.txt"
-BACKUP_FLAG="/tmp/backup_sling.flag"
+
+# Backup sling dir now.
+BACKUP_FLAG="/tmp/backup_sling_dir.flag"
 
 if [ -f $MAINT_FLAG ]; then
   echo "Under maintainence."
@@ -16,7 +18,7 @@ if [ -f $MAINT_FLAG ]; then
 fi
 
 if [ -f $BACKUP_FLAG ]; then
-  echo "Doing backup."
+  echo "Backup sling dir now."
   exit $RET_OK
 fi
 
