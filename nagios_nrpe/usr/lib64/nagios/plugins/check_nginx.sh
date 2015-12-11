@@ -1,11 +1,20 @@
 #!/bin/bash
 
-RET_OK=0
-RET_WR=1
-RET_CR=2
-RET_UK=3
+# A nagios nrpe script.
+# 
+
+# Source function library.
+. /usr/lib64/nagios/plugins/functions
 
 CURL="/usr/bin/curl"
+FLAG="/tmp/nginx_is_restarting_now"
+
+# Nginx is restarted every night.
+# Do not warning this job.
+if [ -f $FLAG ]; then
+  echo $FLAG
+  exit $RET_OK
+fi
 
 # nrpe timeout is 10s
 $CURL --max-time 4 -F"foo=bar" http://www.xuanran001.com:88/userdata/user/update
