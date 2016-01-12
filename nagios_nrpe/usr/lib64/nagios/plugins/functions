@@ -17,17 +17,19 @@ function check_diff() {
   local server="$1"
   local path="$2"
   local name="`basename $path`"
-  local tmp_path="/tmp/check_diff_$name"
+  local tmp_path="/tmp/nrpe_check_diff_$name"
 
   if [ ! -f "$path" ]; then
     echo -n "File not found: $path; "
     exit $RET_CR
   fi
 
-  svn export $SVNOPT http://$GLUEIP/svn/glue/trunk/infrastructure/${server}${path} $tmp_path &> /dev/null
-  if [ $? -ne 0 ]; then
-    echo -n "Failed to get file from svn server!"
-    exit $RET_OK
+  if [ ! -s "$tmp_path" ]; then
+    svn export $SVNOPT http://$GLUEIP/svn/glue/trunk/infrastructure/${server}${path} $tmp_path &> /dev/null
+    if [ $? -ne 0 ]; then
+      echo -n "Failed to get file from svn server!"
+      exit $RET_OK
+    fi
   fi
 
   diff $path $tmp_path &> /dev/null
