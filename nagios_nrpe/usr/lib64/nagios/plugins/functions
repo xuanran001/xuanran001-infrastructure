@@ -38,7 +38,7 @@ function check_diff() {
     exit $RET_WR
   fi
 
-  rm -rf $tmp_path
+  #rm -rf $tmp_path
 }
 
 function check_mount() {
